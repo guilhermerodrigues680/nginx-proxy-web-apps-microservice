@@ -1,0 +1,47 @@
+version: '3.3'
+
+services:
+  nginx:
+    container_name: nginx-proxy
+    build: .
+    expose:
+      - "80"
+    depends_on:
+      - static-site
+      - microservice-spring
+      - microservice-nodejs
+    ports:
+      - "8087:80"
+    networks:
+      - backend
+  
+  static-site:
+    container_name: static-site
+    build:
+      context: static-site/
+    expose:
+      - "80"
+    networks:
+      - backend
+  
+  microservice-spring:
+    container_name: microservice-spring
+    build:
+      context: microservice-spring/
+    expose:
+      - "8080"
+    networks:
+      - backend
+  
+  microservice-nodejs:
+    container_name: microservice-nodejs
+    build:
+      context: microservice-nodejs/
+    expose:
+      - "3000"
+    networks:
+      - backend
+
+networks: 
+  backend:
+    driver: bridge
